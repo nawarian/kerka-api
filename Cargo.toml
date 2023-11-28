@@ -1,0 +1,22 @@
+[package]
+name = "kerka-api"
+version = "0.1.0"
+edition = "2021"
+
+# https://github.com/rustwasm/wasm-pack/issues/1247
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+qrcode-generator = "4.1.9"
+serde = "1.0.193"
+serde_json = "1.0.108"
+worker = "0.0.15"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1
