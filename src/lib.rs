@@ -6,23 +6,30 @@ use worker::{
     event, Context, Cors, Env, Headers, Method, Request, Response, Result, RouteContext, Router,
 };
 
+fn is_origin_allowed(origin: String) -> bool {
+    match origin.as_str() {
+        "https://kerka.com.br" | "http://localhost:3000" => true,
+        _ => false,
+    }
+}
+
 #[event(fetch)]
 async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
-    let is_prod = match env.var("APP_ENV")?.to_string().as_str() {
-        "development" | "test" => false,
-        _ => true,
-    };
+    let headers = req.headers();
+    let origin = headers
+        .get("origin")
+        .unwrap_or(Some(String::from("https://kerka.com.br")))
+        .unwrap();
+    if !is_origin_allowed(origin.clone()) {
+        return Response::error("Bad request", 400);
+    }
 
-    let mut cors = Cors::default()
+    let cors = Cors::default()
         .with_max_age(86400)
-        .with_origins(vec!["https://kerka.com.br", "http://localhost:3000"])
+        .with_origins(vec![origin])
         .with_allowed_headers(vec!["content-type"])
         .with_exposed_headers(vec!["content-type"])
         .with_methods(vec![Method::Post, Method::Options]);
-
-    if !is_prod {
-        cors = cors.with_origins(vec!["*://localhost:*"])
-    }
 
     Router::new()
         .options("/v1/qrcode/:format", |_, _| Response::ok("Hello, friend"))
