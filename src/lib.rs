@@ -68,14 +68,14 @@ async fn generate_qrcode(mut req: Request, ctx: RouteContext<()>) -> Result<Resp
         }
         "png" => {
             let buff =
-                qrcode_generator::to_png_to_vec_from_str(input.text_content, QrCodeEcc::Low, 256)
+                qrcode_generator::to_png_to_vec_from_str(input.text_content, QrCodeEcc::Low, 1024)
                     .unwrap();
             let _ = headers.append("content-type", "image/png");
 
             Ok(Response::from_bytes(buff).unwrap().with_headers(headers))
         }
         "jpg" | "jpeg" => {
-            let img = qrcode_generator::to_image_buffer(input.text_content, QrCodeEcc::Low, 256)
+            let img = qrcode_generator::to_image_buffer(input.text_content, QrCodeEcc::Low, 1024)
                 .expect("failed to generate Qr Code.");
 
             let mut bytes: Vec<u8> = Vec::new();
