@@ -2,5 +2,11 @@ name = "kerka-api"
 main = "build/worker/shim.mjs"
 compatibility_date = "2023-03-22"
 
+[vars]
+APP_ENV = "production"
+
+[env.dev.vars]
+APP_ENV = "development"
+
 [build]
 command = "cargo install -q worker-build && worker-build --release"
