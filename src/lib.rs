@@ -15,7 +15,7 @@ async fn main(req: Request, env: Env, _ctx: Context) -> Result<Response> {
 
     let mut cors = Cors::default()
         .with_max_age(86400)
-        .with_origins(vec!["https://kerka.com.br"])
+        .with_origins(vec!["https://kerka.com.br", "http://localhost:3000"])
         .with_allowed_headers(vec!["content-type"])
         .with_exposed_headers(vec!["content-type"])
         .with_methods(vec![Method::Post, Method::Options]);
